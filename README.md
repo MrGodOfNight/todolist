@@ -1,1 +1,3 @@
 # todolist
+
+This is a simple full-stack application built with Next.js, TypeScript, and Tailwind CSS on the frontend, and ASP.NET 8.0 on the backend. I created this project for my students to teach them how to work with these technologies and understand how a standard REST API web application functions. Feel free to use this project for your own purposes or teaching—it’s yours to use. I deliberately avoided using ready-made solutions in this project to demonstrate to students the foundational concepts of working with these technologies.

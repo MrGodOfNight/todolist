@@ -1,0 +1,29 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio user files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ASP.NET Core
+*.xproj
+*.xproj.*
+*.sln
+*.sln.docstates
+*.sdf
+*.opensdf
+
+# NuGet packages
+packages/
+*.nupkg
+*.snupkg
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+*.cache
