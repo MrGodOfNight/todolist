@@ -1,32 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { applyTheme } from "@/_layouts/ThemeLayout";
+import { useAuth } from "@/_contexts/AuthContext";
+import { useState } from "react";
 
 export default function SettingsClient() {
+  const { logout } = useAuth();
   const [theme, setTheme] = useState<"light" | "dark">("light")
   const [isRussian, setIsRussian] = useState(true);
   
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null
-    if (savedTheme) {
-      setTheme(savedTheme)
-      applyTheme(savedTheme)
-    } else {
-      // Проверка системной темы
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-      setTheme(systemTheme)
-      applyTheme(systemTheme)
-    }
-  }, [])
-
-  const applyTheme = (newTheme: "light" | "dark") => {
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
-  }
-
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light"
     setTheme(newTheme)
@@ -111,6 +93,15 @@ export default function SettingsClient() {
               Настройки сохраняются автоматически при изменении
             </p>
           </div>
+
+          <button
+                onClick={logout}
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl
+                transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-2
+                focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+              >
+                Выйти из аккаунта
+              </button>
         </div>
       </section>
     </div>
