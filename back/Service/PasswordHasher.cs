@@ -1,10 +1,10 @@
-﻿namespace back.Service
+﻿
+namespace back.Service
 {
     public static class PasswordHasher
     {
         public static string HashPassword(string password)
         {
-            // workFactor (по умолчанию 11) определяет сложность вычисления.
             return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12);
         }
 

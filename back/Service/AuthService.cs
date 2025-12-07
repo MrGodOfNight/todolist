@@ -1,5 +1,6 @@
 ﻿using back.Domain;
 using back.Repository;
+using Microsoft.AspNetCore.Identity;
 
 namespace back.Service
 {
@@ -8,16 +9,15 @@ namespace back.Service
         Task<string?> Authenticate(LoginRequest request);
         Task<bool> Register(LoginRequest request);
     }
-
     public class AuthService : IAuthService
     {
-        private readonly IJwtService _jwtService;
         private readonly IUserRepo _userRepo;
+        private readonly IJwtService _jwtService;
 
-        public AuthService(IJwtService jwtService, IUserRepo repo)
+        public AuthService(IUserRepo userRepo, IJwtService jwtService)
         {
+            _userRepo = userRepo;
             _jwtService = jwtService;
-            _userRepo = repo;
         }
 
         public async Task<string?> Authenticate(LoginRequest request)
@@ -25,18 +25,17 @@ namespace back.Service
             try
             {
                 var user = await _userRepo.GetUser(request.Login);
-
-                if (user == null || 
+                if (user == null ||
                     !PasswordHasher.VerifyPassword(request.Password, user.Password))
                     return null;
 
                 return _jwtService.GenerateToken(user);
+
             }
-            catch (Exception)
+            catch
             {
                 return null;
             }
-            
         }
 
         public async Task<bool> Register(LoginRequest request)
@@ -45,7 +44,6 @@ namespace back.Service
             {
                 var hashedPass = PasswordHasher.HashPassword(request.Password);
                 var user = await _userRepo.AddUser(request.Login, hashedPass);
-
                 if (user == null)
                 {
                     return false;
@@ -56,7 +54,6 @@ namespace back.Service
             {
                 return false;
             }
-            
         }
     }
 }

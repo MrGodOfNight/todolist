@@ -21,18 +21,14 @@ namespace back.Controller
             try
             {
                 var response = await _authService.Authenticate(request);
-
                 if (response == null)
-                    return Unauthorized("Invalid login or password");
-
+                    return Unauthorized("Invalid token or password");
                 return Ok(response);
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
-            
         }
 
         [HttpPost("register")]
@@ -41,18 +37,14 @@ namespace back.Controller
             try
             {
                 var response = await _authService.Register(request);
-
                 if (response == false)
-                    return Unauthorized("Invalid login or password");
-
-                return Ok();
+                    return Unauthorized("Invalid token or password");
+                else return Ok();
             }
             catch (Exception ex)
             {
-
                 return BadRequest(ex.Message);
             }
-            
         }
     }
 }

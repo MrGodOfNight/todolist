@@ -2,10 +2,8 @@
 using back.Repository;
 using back.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace back
@@ -16,26 +14,25 @@ namespace back
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Регистрация DbContext
-            builder.Services.AddDbContext<AppDbContext>(options =>
+            builder.Services.AddDbContext<AppDbContext>(options => 
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IUserRepo,  UserRepo>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IUserRepo, UserRepo>();
+            builder.Services.AddScoped<ITodoRepo, TodoRepo>();
+            builder.Services.AddScoped<ITodoService, TodoService>();
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyHeader()
-                               .AllowAnyMethod();
-                    });
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyHeader()
+                           .AllowAnyOrigin()
+                           .AllowAnyMethod();
+                });
             });
 
-            // Аутентификация
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -45,12 +42,12 @@ namespace back
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]!))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]!)),
+                    ClockSkew = TimeSpan.Zero // Отключаем допуск для времени
                 };
             });
 
@@ -61,6 +58,8 @@ namespace back
 
             var app = builder.Build();
 
+            app.UseRouting();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -69,9 +68,9 @@ namespace back
 
             app.UseHttpsRedirection();
 
-            // Включение CORS с именованной политикой
             app.UseCors("AllowAll");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

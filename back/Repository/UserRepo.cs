@@ -19,31 +19,36 @@ namespace back.Repository
 
         public async Task<User> GetUser(string login)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Login == login);
-            return user;
-        }
-        public async Task<User> AddUser(string login, string password)
-        {
             try
             {
-                // Добавляем в контекст
-                _context.Users.Add(new User
-                {
-                    Login = login,
-                    Password = password
-                });
-                // Сохраняем изменения - здесь генерируется Id
-                await _context.SaveChangesAsync();
-
-                // Возвращаем добавленного пользователя
-                return await GetUser(login);
+                var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Login == login);
+                return user;
             }
             catch
             {
                 return null;
             }
             
+        }
+
+        public async Task<User> AddUser(string login, string password)
+        {
+            try
+            {
+                _context.Users.Add(new User
+                {
+                    Login = login,
+                    Password = password
+                });
+                await _context.SaveChangesAsync();
+
+                return await GetUser(login);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

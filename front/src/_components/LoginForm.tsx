@@ -19,10 +19,10 @@ export default function LoginForm()
   const [registerPassword, setRegisterPassword] = useState('');
   const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
   
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     // Логика авторизации
-    login(loginEmail, loginPassword);
+    await login(loginEmail, loginPassword);
     router.push('/') // Перенаправление на главную страницу после успешной авторизации
   };
   
@@ -33,7 +33,9 @@ export default function LoginForm()
       return;
     }
 
-    const status = await fetch(`https://localhost:7075/api/Auth/register`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    
+    const status = await fetch(`${apiUrl}/api/Auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +47,9 @@ export default function LoginForm()
     }).then(res => res.status)
 
     if (status === 200) {
-      handleLogin(e);
+      // Логика авторизации
+      await login(registerEmail, registerPassword);
+      router.push('/') // Перенаправление на главную страницу после успешной авторизации
     } else {
       alert('Не получилось зарегистрироваться')
     }
@@ -57,7 +61,7 @@ export default function LoginForm()
       <section className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden
       border border-gray-200 dark:border-gray-700">
         <div className="p-6 bg-blue-600 dark:bg-gray-700">
-          <h1 className="text-2xl font-bold text-white text-center">Авторизация</h1>
+          <h1 className="text-2xl font-bold text-white text-center">Авторизация/Регистрация</h1>
         </div>
 
         <div className="p-6 space-y-6">
@@ -68,7 +72,8 @@ export default function LoginForm()
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 activeTab === 'login' 
                   ? 'bg-blue-600 text-white shadow-md' 
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  : `bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300
+                  hover:bg-gray-200 dark:hover:bg-gray-600`
               }`}
             >
               Вход
@@ -78,7 +83,8 @@ export default function LoginForm()
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 activeTab === 'register' 
                   ? 'bg-blue-600 text-white shadow-md' 
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  : `bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300
+                  hover:bg-gray-200 dark:hover:bg-gray-600`
               }`}
             >
               Регистрация
@@ -105,11 +111,9 @@ export default function LoginForm()
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    Пароль
-                  </label>
-                </div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Пароль
+                </label>
                 <input
                   type="password"
                   value={loginPassword}
@@ -139,17 +143,17 @@ export default function LoginForm()
 
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Email
+                  Email или логин
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   value={registerEmail}
                   onChange={(e) => setRegisterEmail(e.target.value)}
                   className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 
                   rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none 
                   text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
-                  placeholder="Введите ваш email"
-                  aria-label="Email"
+                  placeholder="Введите ваш email или логин"
+                  aria-label="Email или логин"
                 />
               </div>
 
@@ -164,14 +168,14 @@ export default function LoginForm()
                   className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 
                   rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none 
                   text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
-                  placeholder="Создайте надежный пароль"
+                  placeholder="Введите пароль"
                   aria-label="Пароль"
                 />
               </div>
 
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Подтвердите пароль
+                  Подтверждение пароля
                 </label>
                 <input
                   type="password"
@@ -180,7 +184,7 @@ export default function LoginForm()
                   className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 
                   rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none 
                   text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
-                  placeholder="Повторите пароль"
+                  placeholder="Подтвердите пароль"
                   aria-label="Подтверждение пароля"
                 />
               </div>

@@ -11,7 +11,6 @@ namespace back.Service
         string GenerateToken(User user);
         int? ValidateToken(string token);
     }
-
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
@@ -20,7 +19,6 @@ namespace back.Service
         {
             _configuration = configuration;
         }
-
         public string GenerateToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
@@ -29,10 +27,10 @@ namespace back.Service
 
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Login),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Login),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             var token = new JwtSecurityToken(
                 claims: claims,
@@ -63,12 +61,11 @@ namespace back.Service
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
-
-                return userId;
+                return int.Parse(jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
             }
             catch
             {
+
                 return null;
             }
         }

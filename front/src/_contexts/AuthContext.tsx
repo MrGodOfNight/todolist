@@ -26,7 +26,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Функция для входа пользователя
   const login = async (Login: string, Password: string) => {
-    const authToken = await fetch(`https://localhost:7075/api/Auth/login`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    
+    const authToken = await fetch(`${apiUrl}/api/Auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

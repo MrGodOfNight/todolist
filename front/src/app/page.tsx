@@ -1,10 +1,9 @@
-
-import ThemeButton from "@/_components/ThemeButton";
+import TodoList from "@/_components/TodoList";
 
 export default function Home() {
   return (
-    <div className="bg-white dark:bg-gray-800 text-black dark:text-white p-4">
-      <ThemeButton/>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 pt-20 pb-12">
+      <TodoList />
     </div>
   );
 }
