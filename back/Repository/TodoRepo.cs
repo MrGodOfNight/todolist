@@ -73,7 +73,7 @@ namespace back.Repository
 
             try
             {
-                // Сначала загружаем полный объект с нужными связями
+                // Сначала загружаем полный объект
                 var todo = await _context.Todos
                     .FirstOrDefaultAsync(t => t.Id == id);
 

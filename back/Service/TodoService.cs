@@ -23,8 +23,7 @@ namespace back.Service
         {
             try
             {
-                var todos = await _todoRepo.GetTodos(userId);
-                return todos;
+                return await _todoRepo.GetTodos(userId);
             }
             catch
             {
@@ -43,8 +42,7 @@ namespace back.Service
             };
             try
             {
-                var req = await _todoRepo.CreateTodo(newTodo);
-                return req;
+                return await _todoRepo.CreateTodo(newTodo);
             }
             catch
             {
@@ -63,8 +61,7 @@ namespace back.Service
             };
             try
             {
-                var req = await _todoRepo.UpdateTodo(newTodo);
-                return req;
+                return await _todoRepo.UpdateTodo(newTodo);
             }
             catch
             {
@@ -76,8 +73,7 @@ namespace back.Service
         {
             try
             {
-                var req = await _todoRepo.DeleteTodo(id);
-                return req;
+                return await _todoRepo.DeleteTodo(id);
             }
             catch
             {
